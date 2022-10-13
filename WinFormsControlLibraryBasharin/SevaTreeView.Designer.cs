@@ -44,7 +44,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.treeView1);
             this.Name = "SevaTreeView";
-            this.Size = new System.Drawing.Size(281, 207);
+            this.Size = new System.Drawing.Size(284, 208);
             this.ResumeLayout(false);
 
         }

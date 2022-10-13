@@ -39,13 +39,15 @@ namespace WinFormsControlLibraryBasharin
             }
             set
             {
-                if (value > -1 && value < treeView1.Nodes.Count)
+                if (treeView1.Nodes.Count > 0)
                 {
-                    treeView1.SelectedNode = treeView1.Nodes[value];
-                    treeView1.Focus();
-                    return;
+                    if (value < treeView1.Nodes.Count && value > -1)
+                    {
+                        treeView1.SelectedNode = treeView1.Nodes[value];
+                        treeView1.Focus();
+                        return;
+                    }                
                 }
-                throw new IndexOutOfRangeException();
             }
         }
         private List<string> config;
@@ -55,7 +57,57 @@ namespace WinFormsControlLibraryBasharin
                 throw new NullReferenceException("Add not null config");
             this.config = config;
         }
+        public void CreateTree<T>(T obj) where T : class, new()
+        {
+            if (config == null)
+                throw new NullReferenceException("Add not null config");
+            if (obj == null)
+                throw new NullReferenceException("Add not null list of objects");
 
+            var elementType = obj.GetType();
+            
+            var currentLevelNodes = treeView1.Nodes;
+            int curlvl = 1;
+            foreach (var nodeName in config)
+            {
+                var propertyInfo = elementType.GetProperty(nodeName);
+                if (propertyInfo != null)
+                {
+                    var propertyValue = propertyInfo.GetValue(obj).ToString();
+                    if (!currentLevelNodes.ContainsKey(propertyValue))
+                    {
+                        if (curlvl == config.Count)
+                        {
+                            currentLevelNodes.Add(propertyValue);
+                        }
+                        else
+                            currentLevelNodes.Add(propertyValue, propertyValue);
+                    }
+                    if (curlvl != config.Count)
+                        currentLevelNodes = currentLevelNodes.Find(propertyValue, false)[0].Nodes;
+                }
+                else
+                {
+                    var fieldInfo = elementType.GetField(nodeName);
+                    if (fieldInfo != null)
+                    {
+                        var fieldValue = fieldInfo.GetValue(obj).ToString();
+                        if (!currentLevelNodes.ContainsKey(fieldValue))
+                        {
+                            if (curlvl == config.Count)
+                            {
+                                currentLevelNodes.Add(fieldValue);
+                            }
+                            else
+                                currentLevelNodes.Add(fieldValue, fieldValue);
+                        }
+                        if (curlvl != config.Count)
+                            currentLevelNodes = currentLevelNodes.Find(fieldValue, false)[0].Nodes;
+                    }
+                }
+                curlvl++;
+            }
+        }
         public T GetSelectedNode<T>() where T : class, new()
         {
             if (treeView1.SelectedNode == null)
@@ -94,7 +146,6 @@ namespace WinFormsControlLibraryBasharin
             }
             return item;
         }
-
         public void Clear()
         {
             treeView1.Nodes.Clear();
