@@ -35,7 +35,13 @@ namespace WinFormsControlLibraryBasharin
         {
             get
             {
-                return treeView1.SelectedNode != null ? treeView1.SelectedNode.Index : -1;
+                if (treeView1.SelectedNode != null)
+                {
+                    return treeView1.SelectedNode.Index;
+                } else
+                {
+                    return -1;
+                }
             }
             set
             {
@@ -112,18 +118,15 @@ namespace WinFormsControlLibraryBasharin
         {
             if (treeView1.SelectedNode == null)
                 return null;
-
             var curNode = treeView1.SelectedNode;
             if (curNode.Nodes.Count > 0)
                 throw new Exception("Choose last node of tree (leaf)");
-
             var Vals = new List<string>();
             while (curNode != null)
             {
                 Vals.Add(curNode.Text);
                 curNode = curNode.Parent;
             }
-
             Vals.Reverse();
             var item = new T();
             var count = item.GetType().GetProperties().Length;
