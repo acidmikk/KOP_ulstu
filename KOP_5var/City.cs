@@ -17,5 +17,8 @@ namespace KOP_5var
         public string Federal_District { get; set; }
         public string Region { get; set; }
         public string Name { get; set; }
+        public string Rayon { get; set; }
+        public string Street { get; set; }
+        public int Home_num { get; set; }
     }
 }
