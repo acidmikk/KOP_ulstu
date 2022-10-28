@@ -12,10 +12,10 @@ namespace KOP_5var
         {
 
         }
-
+        public int Id { get; set; }
         public string Country { get; set; }
         public string Federal_District { get; set; }
         public string Region { get; set; }
-        public string Name;
+        public string Name { get; set; }
     }
 }

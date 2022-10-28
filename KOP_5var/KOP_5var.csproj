@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WinFormsControlLibraryBasharinLab2\WinFormsControlLibraryBasharinLab2.csproj" />
     <ProjectReference Include="..\WinFormsControlLibraryBasharin\WinFormsControlLibraryBasharin.csproj" />
   </ItemGroup>
 

@@ -1,8 +1,8 @@
-﻿namespace WinFormsControlLibraryBasharin
+﻿namespace WinFormsControlLibraryBasharinLab2
 {
-    partial class SevaTextBox
+    partial class DiagramToPDF
     {
-        /// <summary> 
+        /// <summary>
         /// Обязательная переменная конструктора.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
@@ -22,37 +22,15 @@
 
         #region Код, автоматически созданный конструктором компонентов
 
-        /// <summary> 
+        /// <summary>
         /// Требуемый метод для поддержки конструктора — не изменяйте 
         /// содержимое этого метода с помощью редактора кода.
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.SuspendLayout();
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(3, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(239, 23);
-            this.textBox1.TabIndex = 0;
-            // 
-            // SevaTextBox
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.textBox1);
-            this.Enabled = false;
-            this.Name = "SevaTextBox";
-            this.Size = new System.Drawing.Size(242, 34);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            components = new System.ComponentModel.Container();
         }
 
         #endregion
-
-        private TextBox textBox1;
     }
 }
