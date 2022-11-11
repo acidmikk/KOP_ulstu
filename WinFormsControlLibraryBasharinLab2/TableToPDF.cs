@@ -166,17 +166,6 @@ namespace WinFormsControlLibraryBasharinLab2
                 {
                     table.Rows.RemoveObjectAt(table.Rows.Count - 1);
                 }
-                /*if (header.Value.Count != 0)
-                {
-                    for (int j = i + 1; j < rowMergeInfo[i] + i + 1; j++)
-                    {
-                        if (table.Rows[j].Cells[0].Elements.Count != 0)
-                        {
-                            throw new Exception("Объединенные ячейки накладываются друг на друга");
-                        }
-                    }
-                }*/
-
             }
 
         }
