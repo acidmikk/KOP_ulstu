@@ -11,19 +11,10 @@
     <Compile Update="MyUnvisual\WordGistagram.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="MyUnvisual\WordTableCustom.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Update="MyUnvisual\WordTablesContext.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Update="MyVisualComponents\DataGridViewModified.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="MyVisualComponents\ListBoxModified.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Update="MyVisualComponents\TextBoxModified.cs">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace ViewForm
+﻿namespace PluginsConventionLibrary.Forms
 {
     partial class FormBook
     {

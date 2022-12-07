@@ -1,26 +1,59 @@
 using ComponentsLibrary.MyVisualComponents;
-using ComponentsLibrary.RomanovaVisualComponents;
 using ComponentsLibrary.BasharinUnvisualComponents;
 using ComponentsLibrary.RomanovaUnvisualComponents;
 using ComponentsLibrary.MyUnvisualComponents;
 using Database.Models;
-using LibraryBusinessLogic.BusinessLogics;
 using LibraryContracts.BindingModels;
-using LibraryContracts.BusinessLogicsContracts;
 using Unity;
 using ComponentsLibrary.MyUnvisualComponents.HelperModels;
 using LibraryContracts.ViewModels;
+using PluginsConventionLibrary.Plugins;
+using DocumentFormat.OpenXml.Office2010.CustomUI;
 
 namespace ViewForm
 {
     public partial class FormMain : Form
     {
-        private readonly IBookLogic _bookLogic;
-        public FormMain(IBookLogic bookLogic)
+        private readonly Dictionary<string, IPluginsConvention> _plugins;
+        private string _selectedPlugin;
+        private ContextMenuStrip contextMenu = new ContextMenuStrip();
+        public FormMain()
         {
             InitializeComponent();
-            _bookLogic = bookLogic;
-            LoadData();
+            _plugins = LoadPlugins();
+            _selectedPlugin = string.Empty;
+        }
+        private Dictionary<string, IPluginsConvention> LoadPlugins()
+        {
+            // TODO Заполнить IPluginsConvention
+            // TODO Заполнить пункт меню "Справочники" на основе IPluginsConvention.PluginName
+            // TODO Например, создавать ToolStripMenuItem, привязывать к ним обработку событий и добавлять в menuStrip
+            // TODO При выборе пункта меню получать UserControl и заполнять элемент panelControl этим контролом на всю площадь
+            // Пример: panelControl.Controls.Clear(); panelControl.Controls.Add(ctrl);
+            PluginsManager manager = new PluginsManager();
+            var plugins = manager.plugins_dictionary;
+
+            ToolStripItem[] toolStripItems = new ToolStripItem[plugins.Count];
+            int i = 0;
+            if (plugins.Count > 0)
+            {
+                foreach (var plugin in plugins)
+                {
+                    ToolStripMenuItem itemMenu = new ToolStripMenuItem();
+                    itemMenu.Text = plugin.Value.PluginName;
+                    itemMenu.Click += (sender, e) =>
+                    {
+                        _selectedPlugin = plugin.Value.PluginName;
+                        panelControl.Controls.Clear();
+                        panelControl.Controls.Add(_plugins[_selectedPlugin].GetControl);
+                        panelControl.Controls[0].Dock = DockStyle.Fill;
+                    };
+                    toolStripItems[i] = itemMenu;
+                    i++;
+                }
+                ControlsStripMenuItem.DropDownItems.AddRange(toolStripItems);
+            }
+            return plugins;
         }
         private void FormMain_KeyDown(object sender, KeyEventArgs e)
         {
@@ -50,149 +83,84 @@ namespace ViewForm
                     break;
             }
         }
-        public void LoadData()
-        {
-            try
-            {
-                dataGridViewModified1.ClearDataGrid();
-                ColumnsDataGrid column = new ColumnsDataGrid();
-                column.CountColumn = 5;
-                column.NameColumn = new string[] { "Id", "Название", "картинка", "Автор", "Дата публикации" };
-                column.Width = new int[] { 50, 300, 0, 300, 130 };
-                column.Visible = new bool[] { true, true, false, true, true };
-                column.PropertiesObject = new string[] { "Id", "BookName", "Image", "Author", "DateOut" };
-                dataGridViewModified1.ConfigColumn(column);
-                var list = _bookLogic.Read(null);
-                if (list != null)
-                {
-                    foreach (var book in list)
-                    {
-                        dataGridViewModified1.AddRow(book);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
         private void AddNewElement()
         {
-            var form = Program.Container.Resolve<FormBook>();
-            if (form.ShowDialog() == DialogResult.OK)
+            var form = _plugins[_selectedPlugin].GetForm(null);
+            if (form != null && form.ShowDialog() == DialogResult.OK)
             {
-                LoadData();
+                _plugins[_selectedPlugin].ReloadData();
             }
         }
         private void UpdateElement()
         {
-            var form = Program.Container.Resolve<FormBook>();
-            form.Id = Convert.ToInt32(dataGridViewModified1.GetSelectedObjectIntoRow<Book>().Id);
-            if (form.ShowDialog() == DialogResult.OK)
+            var element = _plugins[_selectedPlugin].GetElement;
+            if (element == null)
             {
-                LoadData();
+                MessageBox.Show("Нет выбранного элемента", "Ошибка",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            var form = _plugins[_selectedPlugin].GetForm(element);
+            if (form != null && form.ShowDialog() == DialogResult.OK)
+            {
+                _plugins[_selectedPlugin].ReloadData();
             }
         }
         private void DeleteElement()
         {
-            if (MessageBox.Show("Удалить запись", "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Удалить выбранный элемент", "Удаление", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) { return; }
+            var element = _plugins[_selectedPlugin].GetElement;
+            if (element == null)
             {
-                int id = Convert.ToInt32(dataGridViewModified1.GetSelectedObjectIntoRow<Book>().Id);
-                try
-                {
-                    _bookLogic.Delete(new BookBindingModel { Id = id });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                LoadData();
+                MessageBox.Show("Нет выбранного элемента", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-
+            if (_plugins[_selectedPlugin].DeleteElement(element))
+            {
+                _plugins[_selectedPlugin].ReloadData();
+            }
         }
         private void CreatePDF()
         {
-            // TODO узнать где сохранять
-            string fileName = "";
             using (var dialog = new SaveFileDialog { Filter = "pdf|*.pdf" })
             {
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (_plugins[_selectedPlugin].CreateTableDocument(new PluginsConventionSaveDocument { FileName = dialog.FileName }))
                 {
-                    fileName = dialog.FileName.ToString();
-                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK,
-                   MessageBoxIcon.Information);
+                    MessageBox.Show("Документ сохранен", "Создание документа", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка при создании документа", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            var list = _bookLogic.Read(null);
-            var list_images = new List<string>();
-            foreach (var item in list)
-            {
-                list_images.Add(item.Image);
-            }
-            PicToPDF picToPDF = new PicToPDF();
-            picToPDF.CreateDocument(fileName, "Обложки книг", list_images);
         }
         private void CreateExcel()
         {
-            // TODO узнать где сохранять
-            string fileName = "";
-            using (var dialog = new SaveFileDialog { Filter = "xlsx|*.xlsx" })
+            using (var dialog = new SaveFileDialog { Filter = "pdf|*.pdf" })
             {
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (_plugins[_selectedPlugin].CreateTableDocument(new PluginsConventionSaveDocument { FileName = dialog.FileName }))
                 {
-                    fileName = dialog.FileName.ToString();
-                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK,
-                   MessageBoxIcon.Information);
+                    MessageBox.Show("Документ сохранен", "Создание документа", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка при создании документа", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            RomanovaExcelTable romanovaExcelTable = new RomanovaExcelTable();
-            var dict = new List<MergeCells>();
-            romanovaExcelTable.columnsName = new List<string>() { "Id", "BookName", "Author", "DateOut" };
-            int[] arrayHeight = { 30, 30, 30, 30 };
-            string[] arrayHeader3 = { "Идентификатор", "Название книги", "Автор", "Дата публикации" };
-            var listBooks = new List<BookViewModel>();
-            var list = _bookLogic.Read(null);
-            foreach (var book in list)
-            {
-                listBooks.Add(book);
-            }
-            dict.Add(new MergeCells("Инфо о книге", new int[] { 1, 2, 3 }));
-
-            romanovaExcelTable.CreateTableExcel(fileName, "Книги", dict, arrayHeight, arrayHeader3, listBooks);
         }
         private void CreateWord()
         {
-            // TODO узнать где сохранять
-            string fileName = "";
             using (var dialog = new SaveFileDialog { Filter = "docx|*.docx" })
             {
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (_plugins[_selectedPlugin].CreateChartDocument(new PluginsConventionSaveDocument { FileName = dialog.FileName }))
                 {
-                    fileName = dialog.FileName.ToString();
-                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK,
-                   MessageBoxIcon.Information);
+                    MessageBox.Show("Документ сохранен", "Создание документа", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка при создании документа", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            WordGistagram wordGistagram = new WordGistagram();
-            List<TestData> data = new List<TestData>();
-            var list = _bookLogic.Read(null);
-            Dictionary<string, int> authors = new Dictionary<string, int>();
-            foreach (var book in list)
-            {
-                if (!authors.ContainsKey(book.Author))
-                {
-                    authors[book.Author] = 1;
-                } else
-                {
-                    authors[book.Author]++;
-                }
-            }
-            foreach (var author in authors)
-            {
-                data.Add(new TestData { name = author.Key, value = author.Value });
-            }
-            LocationLegend legend = new LocationLegend();
-            wordGistagram.ReportSaveGistogram(fileName, "Документ с гистограммой", "Авторы", legend, data);
         }
         private void AddElementToolStripMenuItem_Click(object sender, EventArgs e) =>
        AddNewElement();
@@ -200,20 +168,11 @@ namespace ViewForm
        UpdateElement();
         private void DelElementToolStripMenuItem_Click(object sender, EventArgs e) =>
        DeleteElement();
-        private void SimpleDocToolStripMenuItem_Click(object sender, EventArgs e) =>
+        private void PdfDocToolStripMenuItem_Click(object sender, EventArgs e) =>
        CreatePDF();
-        private void TableDocToolStripMenuItem_Click(object sender, EventArgs e) =>
+        private void ExcelDocToolStripMenuItem_Click(object sender, EventArgs e) =>
        CreateExcel();
-        private void ChartDocToolStripMenuItem_Click(object sender, EventArgs e) =>
+        private void WordDocToolStripMenuItem_Click(object sender, EventArgs e) =>
        CreateWord();
-
-        private void авторыToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var form = Program.Container.Resolve<FormAuthor>();
-            if (form.ShowDialog() == DialogResult.OK)
-            {
-                LoadData();
-            }
-        }
     }
 }

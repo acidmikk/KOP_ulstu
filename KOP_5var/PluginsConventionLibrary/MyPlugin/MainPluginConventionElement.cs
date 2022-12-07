@@ -1,0 +1,19 @@
+﻿using PluginsConventionLibrary.Plugins;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PluginsConventionLibrary.MyPlugin
+{
+    public class MainPluginConventionElement : PluginsConventionElement
+    {
+        public string BookName { get; set; }
+
+        public string Author{ get; set; }
+
+        public string Image { get; set; }
+        public DateTime DateOut { get; set; }
+    }
+}

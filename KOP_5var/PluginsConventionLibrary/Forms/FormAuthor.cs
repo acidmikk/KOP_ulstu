@@ -2,7 +2,7 @@
 using LibraryContracts.BindingModels;
 using LibraryContracts.BusinessLogicsContracts;
 
-namespace ViewForm
+namespace PluginsConventionLibrary.Forms
 {
     public partial class FormAuthor : Form
     {

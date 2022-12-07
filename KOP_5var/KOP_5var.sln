@@ -11,11 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database", "..\Database\Dat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentsLibrary", "..\ComponentsLibrary\ComponentsLibrary.csproj", "{24BEC0EB-41FF-4B83-B02D-5E3C45965EC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryContracts", "..\LibraryContracts\LibraryContracts.csproj", "{DEF8F8AA-5B0D-44E9-9E17-99766FE5A409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryContracts", "..\LibraryContracts\LibraryContracts.csproj", "{DEF8F8AA-5B0D-44E9-9E17-99766FE5A409}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryBusinessLogic", "..\LibraryBusinessLogic\LibraryBusinessLogic.csproj", "{EA698EB2-2E36-4CD1-A419-A6DF68338D5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryBusinessLogic", "..\LibraryBusinessLogic\LibraryBusinessLogic.csproj", "{EA698EB2-2E36-4CD1-A419-A6DF68338D5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewForm", "..\ViewForm\ViewForm.csproj", "{D4CAB757-A4FF-4637-9491-D913A55386D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewForm", "..\ViewForm\ViewForm.csproj", "{D4CAB757-A4FF-4637-9491-D913A55386D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginsConventionLibrary", "PluginsConventionLibrary\PluginsConventionLibrary.csproj", "{DB6CA185-8E32-4528-8006-F1EAD944AF9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{D4CAB757-A4FF-4637-9491-D913A55386D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4CAB757-A4FF-4637-9491-D913A55386D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4CAB757-A4FF-4637-9491-D913A55386D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB6CA185-8E32-4528-8006-F1EAD944AF9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB6CA185-8E32-4528-8006-F1EAD944AF9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB6CA185-8E32-4528-8006-F1EAD944AF9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB6CA185-8E32-4528-8006-F1EAD944AF9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

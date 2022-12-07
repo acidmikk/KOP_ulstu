@@ -1,4 +1,5 @@
-﻿using LibraryContracts.BindingModels;
+﻿using Database.Implements;
+using LibraryContracts.BindingModels;
 using LibraryContracts.BusinessLogicsContracts;
 using LibraryContracts.StorageContracts;
 using LibraryContracts.ViewModels;
@@ -18,7 +19,10 @@ namespace LibraryBusinessLogic.BusinessLogics
         {
             _authorStorage = authorStorage;
         }
-
+        public AuthorLogic()
+        {
+            _authorStorage = new AuthorStorage();
+        }
         public List<AuthorViewModel> Read(AuthorBindingModel model)
         {
             if (model == null)

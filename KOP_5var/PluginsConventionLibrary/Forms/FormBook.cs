@@ -6,12 +6,11 @@ using Database.Models;
 using LibraryContracts.BindingModels;
 using LibraryContracts.BusinessLogicsContracts;
 using LibraryContracts.ViewModels;
-using Unity;
 using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
 using System.Text;
 
-namespace ViewForm
+namespace PluginsConventionLibrary.Forms
 {
     public partial class FormBook : Form
     {
