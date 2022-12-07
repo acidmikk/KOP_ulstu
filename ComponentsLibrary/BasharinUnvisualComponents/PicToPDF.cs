@@ -18,9 +18,9 @@ namespace ComponentsLibrary.BasharinUnvisualComponents
 
             InitializeComponent();
         }
-        public void CreateDocument(string filepath, string doc_name, string[] images)
+        public void CreateDocument(string filepath, string doc_name, List<string> images)
         {
-            if (string.IsNullOrEmpty(filepath) || string.IsNullOrEmpty(doc_name) || images.Length == 0)
+            if (string.IsNullOrEmpty(filepath) || string.IsNullOrEmpty(doc_name) || images.Count == 0)
             {
                 throw new ArgumentNullException("Недостаточная заполненость данных");
             }
@@ -46,9 +46,10 @@ namespace ComponentsLibrary.BasharinUnvisualComponents
             document.Pages.RemoveAt(document.PageCount - 1);
             document.Save(filepath);
         }
-        private void DrawImage(XGraphics xgr, string jpeg_path, int x, int y)
+        private void DrawImage(XGraphics xgr, string jpeg, int x, int y)
         {
-            XImage image = XImage.FromFile(jpeg_path);
+            byte[] arrayimg = Convert.FromBase64String(jpeg);
+            XImage image = XImage.FromStream(new MemoryStream(arrayimg));
             xgr.DrawImage(image, x, y);
         }
     }

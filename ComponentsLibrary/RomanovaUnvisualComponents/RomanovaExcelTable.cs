@@ -105,12 +105,16 @@ namespace ComponentsLibrary.RomanovaUnvisualComponents
                 foreach (var item in data)
                 {
                     var fields = item.GetType().GetProperties();
-                    if (fields.Count() == columnsName.Count())
+                    if (fields.Count() - 1 == columnsName.Count())
                     {
                         for (int j = 0; j < fields.Count(); j++)
                         {
                             int colIndex = 0;
                             var field = item.GetType().GetProperties()[j];
+                            if (field.Name == "Image")
+                            {
+                                continue;
+                            }
                             var value = field.GetValue(item);
                             if (value != null)
                             {

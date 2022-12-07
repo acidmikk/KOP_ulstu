@@ -1,10 +1,15 @@
 using ComponentsLibrary.MyVisualComponents;
 using ComponentsLibrary.RomanovaVisualComponents;
+using ComponentsLibrary.BasharinUnvisualComponents;
+using ComponentsLibrary.RomanovaUnvisualComponents;
+using ComponentsLibrary.MyUnvisualComponents;
 using Database.Models;
 using LibraryBusinessLogic.BusinessLogics;
 using LibraryContracts.BindingModels;
 using LibraryContracts.BusinessLogicsContracts;
 using Unity;
+using ComponentsLibrary.MyUnvisualComponents.HelperModels;
+using LibraryContracts.ViewModels;
 
 namespace ViewForm
 {
@@ -35,13 +40,13 @@ namespace ViewForm
                     DeleteElement();
                     break;
                 case Keys.S:
-                    CreateSimpleDoc();
+                    CreatePDF();
                     break;
                 case Keys.T:
-                    CreateTableDoc();
+                    CreateExcel();
                     break;
                 case Keys.C:
-                    CreateChartDoc();
+                    CreateWord();
                     break;
             }
         }
@@ -103,21 +108,91 @@ namespace ViewForm
                 }
                 LoadData();
             }
+
         }
         private void CreatePDF()
         {
             // TODO узнать где сохранять
-            
+            string fileName = "";
+            using (var dialog = new SaveFileDialog { Filter = "pdf|*.pdf" })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = dialog.FileName.ToString();
+                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK,
+                   MessageBoxIcon.Information);
+                }
+            }
+            var list = _bookLogic.Read(null);
+            var list_images = new List<string>();
+            foreach (var item in list)
+            {
+                list_images.Add(item.Image);
+            }
+            PicToPDF picToPDF = new PicToPDF();
+            picToPDF.CreateDocument(fileName, "Обложки книг", list_images);
         }
-        private void CreateTableDoc()
+        private void CreateExcel()
         {
             // TODO узнать где сохранять
-            
+            string fileName = "";
+            using (var dialog = new SaveFileDialog { Filter = "xlsx|*.xlsx" })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = dialog.FileName.ToString();
+                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK,
+                   MessageBoxIcon.Information);
+                }
+            }
+            RomanovaExcelTable romanovaExcelTable = new RomanovaExcelTable();
+            var dict = new List<MergeCells>();
+            romanovaExcelTable.columnsName = new List<string>() { "Id", "BookName", "Author", "DateOut" };
+            int[] arrayHeight = { 30, 30, 30, 30 };
+            string[] arrayHeader3 = { "Идентификатор", "Название книги", "Автор", "Дата публикации" };
+            var listBooks = new List<BookViewModel>();
+            var list = _bookLogic.Read(null);
+            foreach (var book in list)
+            {
+                listBooks.Add(book);
+            }
+            dict.Add(new MergeCells("Инфо о книге", new int[] { 1, 2, 3 }));
+
+            romanovaExcelTable.CreateTableExcel(fileName, "Книги", dict, arrayHeight, arrayHeader3, listBooks);
         }
         private void CreateWord()
         {
             // TODO узнать где сохранять
-            
+            string fileName = "";
+            using (var dialog = new SaveFileDialog { Filter = "docx|*.docx" })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    fileName = dialog.FileName.ToString();
+                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK,
+                   MessageBoxIcon.Information);
+                }
+            }
+            WordGistagram wordGistagram = new WordGistagram();
+            List<TestData> data = new List<TestData>();
+            var list = _bookLogic.Read(null);
+            Dictionary<string, int> authors = new Dictionary<string, int>();
+            foreach (var book in list)
+            {
+                if (!authors.ContainsKey(book.Author))
+                {
+                    authors[book.Author] = 1;
+                } else
+                {
+                    authors[book.Author]++;
+                }
+            }
+            foreach (var author in authors)
+            {
+                data.Add(new TestData { name = author.Key, value = author.Value });
+            }
+            LocationLegend legend = new LocationLegend();
+            wordGistagram.ReportSaveGistogram(fileName, "Документ с гистограммой", "Авторы", legend, data);
         }
         private void AddElementToolStripMenuItem_Click(object sender, EventArgs e) =>
        AddNewElement();
@@ -128,7 +203,7 @@ namespace ViewForm
         private void SimpleDocToolStripMenuItem_Click(object sender, EventArgs e) =>
        CreatePDF();
         private void TableDocToolStripMenuItem_Click(object sender, EventArgs e) =>
-       CreateTableDoc();
+       CreateExcel();
         private void ChartDocToolStripMenuItem_Click(object sender, EventArgs e) =>
        CreateWord();
 
