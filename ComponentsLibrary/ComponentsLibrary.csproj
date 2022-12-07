@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="MyUnvisual\WordGistagram.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="MyUnvisual\WordTableCustom.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="MyUnvisual\WordTablesContext.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="MyVisualComponents\DataGridViewModified.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MyVisualComponents\ListBoxModified.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="MyVisualComponents\TextBoxModified.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.18.0" />
+    <PackageReference Include="DocX" Version="2.3.0" />
+    <PackageReference Include="ExcelDna.Interop" Version="15.0.0" />
+    <PackageReference Include="Microsoft.Office.Excel" Version="14.0.4760.1000" />
+    <PackageReference Include="PDFsharp-MigraDoc" Version="1.50.5147" />
+  </ItemGroup>
+
+</Project>
